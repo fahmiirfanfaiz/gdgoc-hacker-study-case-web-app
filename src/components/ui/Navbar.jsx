@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ShoppingCart, Heart, Menu, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/Button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +26,7 @@ const Navbar = () => {
           <ul className="flex flex-wrap gap-12 items-center justify-center text-sm text-white font-inter">
             <li className="flex items-center gap-2 font-normal">
               <Image
-                src="./Phone.svg"
+                src="./images/Phone.svg"
                 alt="Phone Icon"
                 width={16}
                 height={16}
@@ -34,7 +34,7 @@ const Navbar = () => {
               (225) 555-0118
             </li>
             <li className="flex items-center gap-2 font-normal">
-              <Image src="./Mail.svg" alt="Mail Icon" width={16} height={16} />
+              <Image src="./images/Mail.svg" alt="Mail Icon" width={16} height={16} />
               michelle.rivera@example.com
             </li>
             <li className="font-semibold">
@@ -43,25 +43,25 @@ const Navbar = () => {
             <li className="flex items-center gap-2 font-normal">
               Follow Us :
               <Image
-                src="./Instagram.svg"
+                src="./images/Instagram.svg"
                 alt="Instagram Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./YouTube.svg"
+                src="./images/YouTube.svg"
                 alt="YouTube Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./Facebook.svg"
+                src="./images/Facebook.svg"
                 alt="Facebook Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./Twitter.svg"
+                src="./images/Twitter.svg"
                 alt="Twitter Icon"
                 width={25}
                 height={25}
