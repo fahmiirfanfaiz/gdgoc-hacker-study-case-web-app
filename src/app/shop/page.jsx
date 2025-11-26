@@ -8,15 +8,55 @@ import {
   ShoppingCart,
   Eye,
 } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Thumbs } from "swiper/modules";
 import Navbar from "@/components/ui/Navbar";
 import Breadcrumbs from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/Button";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/thumbs";
 
 export default function ShopPage() {
   const [books, setBooks] = useState([]);
   const [currentBookIndex, setCurrentBookIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
+  // Helper function to validate if image actually loads
+  const validateImageUrl = (url) => {
+    return new Promise((resolve) => {
+      if (!url || url.trim() === "") {
+        resolve(false);
+        return;
+      }
+
+      // Basic URL validation
+      try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+          resolve(false);
+          return;
+        }
+      } catch {
+        resolve(false);
+        return;
+      }
+
+      // Test if image actually loads
+      const img = new window.Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+
+      // Timeout after 5 seconds
+      setTimeout(() => resolve(false), 5000);
+    });
+  };
 
   // Fetch books from API
   useEffect(() => {
@@ -24,10 +64,35 @@ export default function ShopPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://bukuacak-9bdcb4ef2605.herokuapp.com/api/v1/book?page=1&limit=10"
+          "https://bukuacak-9bdcb4ef2605.herokuapp.com/api/v1/book?page=1&limit=20"
         );
         const data = await response.json();
-        setBooks(data.books || []);
+
+        // First filter: basic validation
+        const candidateBooks = (data.books || []).filter((book) => {
+          if (!book.cover_image || book.cover_image.trim() === "") {
+            return false;
+          }
+          try {
+            const url = new URL(book.cover_image);
+            return url.protocol === "http:" || url.protocol === "https:";
+          } catch {
+            return false;
+          }
+        });
+
+        // Second filter: validate that images actually load
+        const validationPromises = candidateBooks.map(async (book) => {
+          const isValid = await validateImageUrl(book.cover_image);
+          return isValid ? book : null;
+        });
+
+        const validatedBooks = await Promise.all(validationPromises);
+        const booksWithValidImages = validatedBooks.filter(
+          (book) => book !== null
+        );
+
+        setBooks(booksWithValidImages);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -37,19 +102,15 @@ export default function ShopPage() {
     fetchBooks();
   }, []);
 
-  // Navigation functions
-  const nextBook = () => {
-    setCurrentBookIndex((prev) => (prev + 1) % books.length);
-  };
-
-  const prevBook = () => {
-    setCurrentBookIndex((prev) => (prev - 1 + books.length) % books.length);
-  };
-
   // Parse price string to number
   const parsePrice = (priceStr) => {
     if (!priceStr || priceStr === "0") return 0;
     return parseFloat(priceStr.replace(/[^0-9.]/g, ""));
+  };
+
+  // Handle swiper slide change
+  const handleSlideChange = (swiper) => {
+    setCurrentBookIndex(swiper.realIndex);
   };
 
   if (loading) {
@@ -96,275 +157,266 @@ export default function ShopPage() {
 
   const currentBook = books[currentBookIndex];
   const price = parsePrice(currentBook.details.price);
-  const discountedPrice = price * 0.8; // 20% discount for demo
+  const discountedPrice = price * 0.8; 
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <Breadcrumbs />
+    <>
+      <style jsx global>{`
+        .swiper-button-next,
+        .swiper-button-prev {
+          color: white !important;
+        }
 
-      {/* Product Detail Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left: Image Swiper */}
-          <div className="relative">
-            {/* Main Image */}
-            <div className="relative aspect-3/4 bg-[#F5F5F5] rounded-lg overflow-hidden mb-4">
-              <Image
-                src={currentBook.cover_image || "/placeholder-book.jpg"}
-                alt={currentBook.title}
-                fill
-                className="object-contain p-8"
-                unoptimized
-              />
+        .swiper-pagination-bullet {
+          background: white !important;
+          opacity: 0.5;
+        }
 
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevBook}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-                aria-label="Previous book"
-              >
-                <ChevronLeft className="w-6 h-6 text-[#252B42]" />
-              </button>
-              <button
-                onClick={nextBook}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-                aria-label="Next book"
-              >
-                <ChevronRight className="w-6 h-6 text-[#252B42]" />
-              </button>
-            </div>
+        .swiper-pagination-bullet-active {
+          opacity: 1 !important;
+        }
+      `}</style>
 
-            {/* Thumbnail Navigation */}
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              {books.slice(0, 4).map((book, index) => (
-                <button
-                  key={book._id}
-                  onClick={() => setCurrentBookIndex(index)}
-                  className={`shrink-0 w-20 h-28 rounded-lg overflow-hidden border-2 transition-all ${
-                    index === currentBookIndex
-                      ? "border-[#23A6F0] ring-2 ring-[#23A6F0]/20"
-                      : "border-gray-200 hover:border-[#23A6F0]/50"
-                  }`}
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <Breadcrumbs />
+
+        {/* Product Detail Section */}
+        <div className="container mx-auto px-24 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* Left: Image Swiper */}
+            <div className="space-y-4">
+              {/* Main Image Swiper */}
+              <div className="w-[36vw] h-[36vw] bg-[#C2C2C2] overflow-hidden ">
+                <Swiper
+                  modules={[Navigation, Pagination, Thumbs]}
+                  navigation
+                  pagination={{ clickable: true }}
+                  thumbs={{ swiper: thumbsSwiper }}
+                  loop={true}
+                  onSlideChange={handleSlideChange}
+                  className="aspect-square"
                 >
-                  <Image
-                    src={book.cover_image || "/placeholder-book.jpg"}
-                    alt={book.title}
-                    width={80}
-                    height={112}
-                    className="w-full h-full object-cover"
-                    unoptimized
-                  />
-                </button>
-              ))}
+                  {books.map((book) => (
+                    <SwiperSlide key={book._id}>
+                      <div className="w-full h-full flex items-center justify-center p-8">
+                        <Image
+                          src={book.cover_image}
+                          alt={book.title}
+                          width={500}
+                          height={500}
+                          className="max-w-full max-h-full object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+
+              {/* Thumbnail Swiper
+              <Swiper
+                modules={[Thumbs]}
+                onSwiper={setThumbsSwiper}
+                spaceBetween={10}
+                slidesPerView={4}
+                watchSlidesProgress
+                className="thumbs-swiper"
+              >
+                {books.slice(0, 8).map((book) => (
+                  <SwiperSlide key={book._id}>
+                    <div className="aspect-square bg-[#F5F5F5] cursor-pointer overflow-hidden rounded-lg border-2 border-transparent hover:border-[#23A6F0] transition-colors">
+                      <Image
+                        src={book.cover_image}
+                        alt={book.title}
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper> */}
+
+              {/* Book Counter */}
+              <div className="text-center">
+                <p className="text-sm font-inter text-gray-600">
+                  Book {currentBookIndex + 1} of {books.length}
+                </p>
+              </div>
             </div>
 
-            {/* Book Counter */}
-            <div className="text-center mt-4">
-              <p className="text-sm font-inter text-gray-600">
-                Book {currentBookIndex + 1} of {books.length}
-              </p>
+            {/* Right: Product Info */}
+            <div className="space-y-6">
+              {/* Tags/Categories */}
+              <div className="flex flex-wrap gap-2">
+                {currentBook.category && (
+                  <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold font-inter bg-[#E0E0E0] text-[#000000]">
+                    {currentBook.category.name}
+                  </span>
+                )}
+                {currentBook.tags?.slice(0, 2).map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold font-inter bg-[#E0E0E0] text-[#000000]"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+
+              {/* Title */}
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold font-inter text-[#252B42] mb-3">
+                  {currentBook.title}
+                </h1>
+              </div>
+
+              {/* Price */}
+              <div className="flex items-baseline gap-4">
+                <span className="text-4xl font-bold font-inter text-[#000000]">
+                  Rp {discountedPrice.toLocaleString("id-ID")}
+                </span>
+              </div>
+
+              {/* Availability */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold font-inter text-[#737373]">
+                  Availability:
+                </span>
+                <span className="text-sm font-bold font-inter text-[#23A6F0]">
+                  In Stock
+                </span>
+              </div>
+
+              {/* Summary */}
+              <div>
+                <p className="text-sm font-inter text-[#858585] leading-relaxed line-clamp-6">
+                  {currentBook.summary || "No description available."}
+                </p>
+              </div>
+
+              {/* Details Grid */}
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <span className="text-sm font-semibold font-inter text-[#858585]">
+                    Pages:
+                  </span>
+                  <span className="text-sm font-inter text-[#858585]">
+                    {currentBook.details.total_pages || "N/A"}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-sm font-semibold font-inter text-[#858585]">
+                    Publisher:
+                  </span>
+                  <span className="text-sm font-inter text-[#858585]">
+                    {currentBook.publisher || "N/A"}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-sm font-semibold font-inter text-[#858585]">
+                    ISBN:
+                  </span>
+                  <span className="text-sm font-inter text-[#858585]">
+                    {currentBook.details.isbn || "N/A"}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-sm font-semibold font-inter text-[#858585]">
+                    Published:
+                  </span>
+                  <span className="text-sm font-inter text-[#858585]">
+                    {currentBook.details.published_date || "N/A"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2.5 pt-6">
+                <button className="px-3.5 py-2.5 bg-[#007AFF] text-white font-semibold rounded-2xl hover:bg-[#005FCC] transition-colors">
+                  Buy Now
+                </button>
+                <button
+                  className="group p-2.5 bg-[#DBECFF] rounded-full hover:bg-[#AACBFF] transition-colors"
+                  aria-label="Add to wishlist"
+                >
+                  <Heart className="w-5 h-5 text-[#252B42] group-hover:text-white transition-colors" />
+                </button>
+                <button
+                  className="group p-2.5 bg-[#DBECFF] rounded-full hover:bg-[#AACBFF] transition-colors"
+                  aria-label="Add to cart"
+                >
+                  <ShoppingCart className="w-5 h-5 text-[#252B42] group-hover:text-white transition-colors" />
+                </button>
+                <button
+                  className="group p-2.5 bg-[#DBECFF] rounded-full hover:bg-[#AACBFF] transition-colors"
+                  aria-label="Quick view"
+                >
+                  <Eye className="w-5 h-5 text-[#252B42] group-hover:text-white transition-colors" />
+                </button>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Right: Product Info */}
-          <div className="space-y-6">
-            {/* Title */}
-            <div>
-              <h1 className="text-3xl lg:text-4xl font-bold font-inter text-[#252B42] mb-3">
-                {currentBook.title}
-              </h1>
-              <p className="text-lg font-inter text-gray-600">
-                by {currentBook.author.name}
-              </p>
-            </div>
+        {/* Your Reading List Section */}
+        <div className="bg-[#FAFAFA] py-16">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-bold font-inter text-[#252B42] mb-8">
+              Your Reading List
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {books.slice(0, 4).map((book) => {
+                const bookPrice = parsePrice(book.details.price);
+                const bookDiscounted = bookPrice * 0.8;
 
-            {/* Tags/Categories */}
-            <div className="flex flex-wrap gap-2">
-              {currentBook.category && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold font-inter bg-[#23856D] text-white">
-                  {currentBook.category.name}
-                </span>
-              )}
-              {currentBook.tags?.slice(0, 2).map((tag, index) => (
-                <span
-                  key={index}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold font-inter bg-[#23A6F0] text-white"
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-
-            {/* Price */}
-            <div className="flex items-baseline gap-4">
-              <span className="text-4xl font-bold font-inter text-[#23856D]">
-                Rp {discountedPrice.toLocaleString("id-ID")}
-              </span>
-              {price > 0 && (
-                <span className="text-2xl font-semibold font-inter text-gray-400 line-through">
-                  {currentBook.details.price}
-                </span>
-              )}
-            </div>
-
-            {/* Availability */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold font-inter text-gray-700">
-                Availability:
-              </span>
-              <span className="text-sm font-bold font-inter text-[#23A6F0]">
-                In Stock
-              </span>
-            </div>
-
-            {/* Summary */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-bold font-inter text-[#252B42] mb-3">
-                Description
-              </h3>
-              <p className="text-sm font-inter text-gray-600 leading-relaxed line-clamp-6">
-                {currentBook.summary || "No description available."}
-              </p>
-            </div>
-
-            {/* Details Grid */}
-            <div className="border-t pt-6 grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  Pages
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.details.total_pages || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  Publisher
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.publisher || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  ISBN
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.details.isbn || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  Published
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.details.published_date || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  Format
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.details.format || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-inter text-gray-700">
-                  Size
-                </p>
-                <p className="text-sm font-inter text-gray-600">
-                  {currentBook.details.size || "N/A"}
-                </p>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="border-t pt-6 space-y-4">
-              <div className="flex gap-3">
-                <Button className="flex-1 bg-[#23A6F0] hover:bg-[#23A6F0]/90 text-white font-semibold font-inter py-6 text-lg">
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
-                </Button>
-                <Button
-                  variant="outline"
-                  className="px-6 py-6 border-2 border-[#23A6F0] text-[#23A6F0] hover:bg-[#23A6F0]/10"
-                >
-                  <Heart className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="px-6 py-6 border-2 border-gray-300 hover:bg-gray-50"
-                >
-                  <Eye className="w-5 h-5" />
-                </Button>
-              </div>
-
-              {/* Buy Now Button */}
-              <Button className="w-full bg-[#23856D] hover:bg-[#23856D]/90 text-white font-semibold font-inter py-6 text-lg">
-                Buy Now
-              </Button>
+                return (
+                  <button
+                    key={book._id}
+                    onClick={() => {
+                      const index = books.findIndex((b) => b._id === book._id);
+                      setCurrentBookIndex(index);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="group text-left"
+                  >
+                    <div className="aspect-3/4 bg-white rounded-lg overflow-hidden mb-4 shadow-sm group-hover:shadow-lg transition-shadow">
+                      <Image
+                        src={book.cover_image}
+                        alt={book.title}
+                        width={300}
+                        height={400}
+                        className="w-full h-full object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <h3 className="font-bold font-inter text-[#252B42] mb-1 line-clamp-2 group-hover:text-[#23A6F0] transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-sm font-inter text-gray-600 mb-2">
+                      {book.category?.name || "General"}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      {bookPrice > 0 && (
+                        <>
+                          <span className="text-sm font-semibold font-inter text-gray-400 line-through">
+                            Rp {bookPrice.toLocaleString("id-ID")}
+                          </span>
+                          <span className="text-lg font-bold font-inter text-[#23856D]">
+                            Rp {bookDiscounted.toLocaleString("id-ID")}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Your Reading List Section */}
-      <div className="bg-[#FAFAFA] py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold font-inter text-[#252B42] mb-8">
-            Your Reading List
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {books.slice(0, 4).map((book) => {
-              const bookPrice = parsePrice(book.details.price);
-              const bookDiscounted = bookPrice * 0.8;
-
-              return (
-                <button
-                  key={book._id}
-                  onClick={() => {
-                    const index = books.findIndex((b) => b._id === book._id);
-                    setCurrentBookIndex(index);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="group text-left"
-                >
-                  <div className="aspect-3/4 bg-white rounded-lg overflow-hidden mb-4 shadow-sm group-hover:shadow-lg transition-shadow">
-                    <Image
-                      src={book.cover_image || "/placeholder-book.jpg"}
-                      alt={book.title}
-                      width={300}
-                      height={400}
-                      className="w-full h-full object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <h3 className="font-bold font-inter text-[#252B42] mb-1 line-clamp-2 group-hover:text-[#23A6F0] transition-colors">
-                    {book.title}
-                  </h3>
-                  <p className="text-sm font-inter text-gray-600 mb-2">
-                    {book.category?.name || "General"}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    {bookPrice > 0 && (
-                      <>
-                        <span className="text-sm font-semibold font-inter text-gray-400 line-through">
-                          Rp {bookPrice.toLocaleString("id-ID")}
-                        </span>
-                        <span className="text-lg font-bold font-inter text-[#23856D]">
-                          Rp {bookDiscounted.toLocaleString("id-ID")}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
