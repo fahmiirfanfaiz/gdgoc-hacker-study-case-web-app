@@ -182,12 +182,12 @@ export default function ShopPage() {
         <Breadcrumbs />
 
         {/* Product Detail Section */}
-        <div className="container mx-auto px-24 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="container mx-auto px-28 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Left: Image Swiper */}
             <div className="space-y-4">
               {/* Main Image Swiper */}
-              <div className="w-[36vw] h-[36vw] bg-[#C2C2C2] overflow-hidden ">
+              <div className="w-[40vw] h-[40vw] bg-[#C2C2C2] overflow-hidden ">
                 <Swiper
                   modules={[Navigation, Pagination, Thumbs]}
                   navigation
@@ -238,13 +238,6 @@ export default function ShopPage() {
                   </SwiperSlide>
                 ))}
               </Swiper> */}
-
-              {/* Book Counter */}
-              <div className="text-center">
-                <p className="text-sm font-inter text-gray-600">
-                  Book {currentBookIndex + 1} of {books.length}
-                </p>
-              </div>
             </div>
 
             {/* Right: Product Info */}
@@ -268,14 +261,14 @@ export default function ShopPage() {
 
               {/* Title */}
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold font-inter text-[#252B42] mb-3">
+                <h1 className="text-3xl lg:text-4xl font-semibold font-inter text-[#252B42] mb-3">
                   {currentBook.title}
                 </h1>
               </div>
 
               {/* Price */}
               <div className="flex items-baseline gap-4">
-                <span className="text-4xl font-bold font-inter text-[#000000]">
+                <span className="text-4xl font-semibold font-inter text-[#252B42]">
                   Rp {discountedPrice.toLocaleString("id-ID")}
                 </span>
               </div>
