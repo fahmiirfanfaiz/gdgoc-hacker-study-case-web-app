@@ -157,7 +157,7 @@ export default function ShopPage() {
 
   const currentBook = books[currentBookIndex];
   const price = parsePrice(currentBook.details.price);
-  const discountedPrice = price * 0.8; 
+  const discountedPrice = price * 0.8;
 
   return (
     <>
@@ -355,12 +355,13 @@ export default function ShopPage() {
         </div>
 
         {/* Your Reading List Section */}
-        <div className="bg-[#FAFAFA] py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold font-inter text-[#252B42] mb-8">
+        <div className="bg-[#FAFAFA] py-2">
+          <div className="container mx-auto px-2">
+            <h2 className="text-2xl font-bold font-inter text-[#252B42] ml-24 mb-8">
               Your Reading List
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="border-t border-[#ECECEC] w-[80vw] ml-[6vw] pt-8 mb-[-1vw]"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4">
               {books.slice(0, 4).map((book) => {
                 const bookPrice = parsePrice(book.details.price);
                 const bookDiscounted = bookPrice * 0.8;
@@ -375,33 +376,37 @@ export default function ShopPage() {
                     }}
                     className="group text-left"
                   >
-                    <div className="aspect-3/4 bg-white rounded-lg overflow-hidden mb-4 shadow-sm group-hover:shadow-lg transition-shadow">
-                      <Image
-                        src={book.cover_image}
-                        alt={book.title}
-                        width={300}
-                        height={400}
-                        className="w-full h-full object-cover"
-                        unoptimized
-                      />
-                    </div>
-                    <h3 className="font-bold font-inter text-[#252B42] mb-1 line-clamp-2 group-hover:text-[#23A6F0] transition-colors">
-                      {book.title}
-                    </h3>
-                    <p className="text-sm font-inter text-gray-600 mb-2">
-                      {book.category?.name || "General"}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      {bookPrice > 0 && (
-                        <>
-                          <span className="text-sm font-semibold font-inter text-gray-400 line-through">
-                            Rp {bookPrice.toLocaleString("id-ID")}
-                          </span>
-                          <span className="text-lg font-bold font-inter text-[#23856D]">
-                            Rp {bookDiscounted.toLocaleString("id-ID")}
-                          </span>
-                        </>
-                      )}
+                    <div className="bg-[#FFFFFF] shadow-sm overflow-hidden w-[238px] mx-auto">
+                      <div className="bg-white overflow-hidden group-hover:shadow-lg transition-shadow">
+                        <Image
+                          src={book.cover_image}
+                          alt={book.title}
+                          width={180}
+                          height={240}
+                          className="w-full h-full object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold font-inter text-[#252B42] mb-2 line-clamp-2 group-hover:text-[#23A6F0] transition-colors">
+                          {book.title}
+                        </h3>
+                        <p className="text-sm font-inter text-gray-600 mb-3">
+                          {book.category?.name || "General"}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          {bookPrice > 0 && (
+                            <>
+                              <span className="text-sm font-semibold font-inter text-gray-400 line-through">
+                                Rp {bookPrice.toLocaleString("id-ID")}
+                              </span>
+                              <span className="text-lg font-bold font-inter text-[#23856D]">
+                                Rp {bookDiscounted.toLocaleString("id-ID")}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </button>
                 );
