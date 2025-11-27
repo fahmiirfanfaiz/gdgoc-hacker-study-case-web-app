@@ -29,55 +29,61 @@ export default function ContactPage() {
       <Navbar />
       <Breadcrumbs />
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-10 md:py-12">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold font-inter text-[#252B42] mb-4">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-inter text-[#252B42] mb-3 sm:mb-4">
               Contact Us
             </h1>
-            <p className="text-lg font-inter text-[#737373]">
+            <p className="text-base sm:text-lg font-inter text-[#737373] px-4">
               We&apos;d love to hear from you. Send us a message and we&apos;ll
               respond as soon as possible.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="w-12 h-12 bg-[#23A6F0] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-10 md:mb-12">
+            <div className="text-center p-4 sm:p-6 bg-gray-50 rounded-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#23A6F0] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="font-bold font-inter text-[#252B42] mb-2">
+              <h3 className="text-base sm:text-lg font-bold font-inter text-[#252B42] mb-2">
                 Phone
               </h3>
-              <p className="text-[#737373] font-inter">(225) 555-0118</p>
+              <p className="text-sm sm:text-base text-[#737373] font-inter">
+                (225) 555-0118
+              </p>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="w-12 h-12 bg-[#23856D] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-6 h-6 text-white" />
+            <div className="text-center p-4 sm:p-6 bg-gray-50 rounded-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#23856D] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="font-bold font-inter text-[#252B42] mb-2">
+              <h3 className="text-base sm:text-lg font-bold font-inter text-[#252B42] mb-2">
                 Email
               </h3>
-              <p className="text-[#737373] font-inter">contact@bookstar.com</p>
+              <p className="text-sm sm:text-base text-[#737373] font-inter">
+                contact@bookstar.com
+              </p>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <div className="w-12 h-12 bg-[#E77C40] rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-6 h-6 text-white" />
+            <div className="text-center p-4 sm:p-6 bg-gray-50 rounded-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#E77C40] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="font-bold font-inter text-[#252B42] mb-2">
+              <h3 className="text-base sm:text-lg font-bold font-inter text-[#252B42] mb-2">
                 Location
               </h3>
-              <p className="text-[#737373] font-inter">Jakarta, Indonesia</p>
+              <p className="text-sm sm:text-base text-[#737373] font-inter">
+                Jakarta, Indonesia
+              </p>
             </div>
           </div>
 
-          <div className="bg-white border rounded-lg p-8">
-            <h2 className="text-2xl font-bold font-inter text-[#252B42] mb-6">
+          <div className="bg-white border rounded-lg p-4 sm:p-6 md:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold font-inter text-[#252B42] mb-4 sm:mb-6">
               Send us a Message
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold font-inter text-[#252B42] mb-2">

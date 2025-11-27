@@ -23,23 +23,23 @@ const Breadcrumbs = () => {
 
   return (
     <nav className="w-full bg-white py-6">
-      <div className="container mx-auto px-4">
-        <ol className="flex items-center gap-2 text-sm font-inter">
+      <div className="container mx-auto px-4 sm:px-8 md:px-16 lg:ml-[16vw]">
+        <ol className="flex items-center justify-center sm:justify-start gap-2 text-sm font-inter">
           {breadcrumbs.map((breadcrumb, index) => (
             <li key={breadcrumb.href} className="flex items-center gap-2">
               <Link
                 href={breadcrumb.href}
                 className={`transition-colors ${
                   breadcrumb.active
-                    ? "text-[#252B42] font-semibold"
-                    : "text-[#737373] font-normal hover:text-[#23856D]"
+                    ? "text-[#BDBDBD] font-bold"
+                    : "text-[#252B42] font-bold hover:text-[#23856D]"
                 }`}
                 style={{ fontWeight: breadcrumb.active ? 600 : 400 }}
               >
                 {breadcrumb.name}
               </Link>
               {index < breadcrumbs.length - 1 && (
-                <ChevronRight className="w-4 h-4 text-[#BDBDBD]" />
+                <ChevronRight className="w-4 h-4 font-bold text-[#BDBDBD]" />
               )}
             </li>
           ))}
