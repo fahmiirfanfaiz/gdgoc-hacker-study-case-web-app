@@ -2,12 +2,21 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ShoppingCart, Heart, Menu, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { usePathname } from "next/navigation";
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  Menu,
+  User,
+  ChevronRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -20,13 +29,13 @@ const Navbar = () => {
 
   return (
     // Top Navbar (Teal Background)
-    <nav className="w-full">
+    <nav className="w-full overflow-x-hidden">
       <div className="w-full bg-[#23856D]">
         <div className="container mx-auto h-[58px] flex items-center justify-center px-4">
-          <ul className="flex flex-wrap gap-12 items-center justify-center text-sm text-white font-inter">
+          <ul className="flex flex-wrap gap-4 lg:gap-8 xl:gap-12 items-center justify-center text-sm text-white font-inter">
             <li className="flex items-center gap-2 font-normal">
               <Image
-                src="./Phone.svg"
+                src="./images/Phone.svg"
                 alt="Phone Icon"
                 width={16}
                 height={16}
@@ -34,7 +43,12 @@ const Navbar = () => {
               (225) 555-0118
             </li>
             <li className="flex items-center gap-2 font-normal">
-              <Image src="./Mail.svg" alt="Mail Icon" width={16} height={16} />
+              <Image
+                src="./images/Mail.svg"
+                alt="Mail Icon"
+                width={16}
+                height={16}
+              />
               michelle.rivera@example.com
             </li>
             <li className="font-semibold">
@@ -43,25 +57,25 @@ const Navbar = () => {
             <li className="flex items-center gap-2 font-normal">
               Follow Us :
               <Image
-                src="./Instagram.svg"
+                src="./images/Instagram.svg"
                 alt="Instagram Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./YouTube.svg"
+                src="./images/YouTube.svg"
                 alt="YouTube Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./Facebook.svg"
+                src="./images/Facebook.svg"
                 alt="Facebook Icon"
                 width={25}
                 height={25}
               />
               <Image
-                src="./Twitter.svg"
+                src="./images/Twitter.svg"
                 alt="Twitter Icon"
                 width={25}
                 height={25}
@@ -78,22 +92,55 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               href="/"
-              className="text-2xl font-semibold ml-[10vw] font-inter text-[#252B42]"
+              className="text-2xl font-semibold ml-[16vw] font-inter text-[#252B42]"
             >
               Bookstar
             </Link>
 
             {/* Desktop Navigation Links */}
             <div className="hidden lg:flex items-center gap-6 mr-[4vw]">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-semibold font-inter text-[#737373] hover:text-[#252B42] transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                // Special handling for Shop link with chevron
+                if (link.name === "Shop") {
+                  const isActive = pathname === "/shop";
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className={`flex items-center gap-1 text-sm font-semibold font-inter transition-colors ${
+                        isActive
+                          ? "text-[#252B42]"
+                          : "text-[#737373] hover:text-[#252B42]"
+                      }`}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronRight
+                        className={`w-3 h-3 text-[#252B42] transition-all duration-500 ease-out ${
+                          isActive ? "rotate-90" : "rotate-0"
+                        }`}
+                        style={{
+                          transformOrigin: "center",
+                        }}
+                      />
+                    </Link>
+                  );
+                }
+
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`text-sm font-semibold font-inter transition-colors ${
+                      isActive
+                        ? "text-[#252B42]"
+                        : "text-[#737373] hover:text-[#252B42]"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Right Side - Login/Register & Icons */}
@@ -125,6 +172,7 @@ const Navbar = () => {
                   className="text-[#23A6F0] hover:bg-transparent hover:text-[#6CBDF3] transition-opacity relative"
                 >
                   <ShoppingCart className="w-5 h-5" />
+                  <span className=" text-sm font-normal text-[#23A6F0]">1</span>
                 </Button>
 
                 <Button
@@ -133,6 +181,7 @@ const Navbar = () => {
                   className="hidden md:flex text-[#23A6F0] hover:bg-transparent hover:text-[#6CBDF3] transition-opacity relative"
                 >
                   <Heart className="w-5 h-5" />
+                  <span className=" text-sm font-normal text-[#23A6F0]">1</span>
                 </Button>
 
                 {/* Mobile Menu Toggle */}
