@@ -1,15 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingCart, Heart, Menu, User } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetTitle,
-} from "@/components/ui/Sheet";
 
 const NavbarMobile = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,8 +20,9 @@ const NavbarMobile = () => {
   ];
 
   return (
-    <nav className="w-full bg-white border-b">
+    <nav className="w-full bg-white border-b relative">
       <div className="container mx-auto px-4">
+        {/* Top Bar */}
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link
@@ -72,83 +68,100 @@ const NavbarMobile = () => {
             </div>
 
             {/* Mobile Menu Toggle */}
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-[#252B42] hover:bg-transparent"
-                >
-                  <Menu className="w-6 h-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="top" className="w-full bg-white">
-                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <nav className="flex flex-col items-center gap-6 mt-12">
-                  {/* Navigation Links - Vertically Stacked */}
-                  {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className={`text-2xl font-normal font-inter transition-colors ${
-                          isActive
-                            ? "text-[#252B42]"
-                            : "text-[#737373] hover:text-[#252B42]"
-                        }`}
-                      >
-                        {link.name}
-                      </Link>
-                    );
-                  })}
-
-                  {/* Icons Section - Vertically Stacked */}
-                  <div className="flex flex-col items-center gap-6 pt-6">
-                    {/* Login / Register - Vertically Stacked */}
-                    <Link
-                      href="/login"
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-2 text-2xl font-normal font-inter text-[#23A6F0] hover:opacity-80 transition-opacity"
-                    >
-                      <User className="w-6 h-6 " />
-                      <span>Login / Register</span>
-                    </Link>
-                    {/* Search Icon */}
-                    <button
-                      className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Search className="w-6 h-6" />
-                    </button>
-
-                    {/* Shopping Cart Icon with Counter */}
-                    <button
-                      className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <ShoppingCart className="w-6 h-6" />
-                      <span className="text-2xl font-normal font-inter text-[#23A6F0]">
-                        1
-                      </span>
-                    </button>
-
-                    {/* Heart Icon with Counter */}
-                    <button
-                      className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Heart className="w-6 h-6" />
-                      <span className="text-2xl font-normal font-inter text-[#23A6F0]">
-                        1
-                      </span>
-                    </button>
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-[#252B42] hover:bg-transparent md:hidden"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+            >
+              {isOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Image
+                  src="/images/OpenMenu.svg"
+                  alt="Open menu"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+              )}
+            </Button>
           </div>
+        </div>
+
+        {/* Mobile Menu - Expandable Dropdown */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <nav className="flex flex-col items-center gap-6 py-8">
+            {/* Navigation Links - Vertically Stacked */}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-xl font-normal font-inter transition-colors ${
+                    isActive
+                      ? "text-[#252B42]"
+                      : "text-[#737373] hover:text-[#252B42]"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+
+            {/* Icons Section - Vertically Stacked */}
+            <div className="flex flex-col items-center gap-6 pt-4  border-gray-200 w-full max-w-[200px]">
+              {/* Login / Register */}
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 text-xl font-normal font-inter text-[#23A6F0] hover:opacity-80 transition-opacity"
+              >
+                <User className="w-5 h-5" />
+                <span>Login / Register</span>
+              </Link>
+
+              {/* Search Icon */}
+              <button
+                className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
+                onClick={() => setIsOpen(false)}
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              {/* Shopping Cart Icon with Counter */}
+              <button
+                className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
+                onClick={() => setIsOpen(false)}
+                aria-label="Shopping cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <span className="text-xl font-normal font-inter text-[#23A6F0]">
+                  1
+                </span>
+              </button>
+
+              {/* Heart Icon with Counter */}
+              <button
+                className="flex items-center gap-3 text-[#23A6F0] hover:opacity-80 transition-opacity"
+                onClick={() => setIsOpen(false)}
+                aria-label="Wishlist"
+              >
+                <Heart className="w-5 h-5" />
+                <span className="text-xl font-normal font-inter text-[#23A6F0]">
+                  1
+                </span>
+              </button>
+            </div>
+          </nav>
         </div>
       </div>
     </nav>

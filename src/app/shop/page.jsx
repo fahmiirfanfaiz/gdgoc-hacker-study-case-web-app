@@ -38,7 +38,7 @@ export default function ShopPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://bukuacak-9bdcb4ef2605.herokuapp.com/api/v1/book?page=1&limit=30",
+          "https://bukuacak-9bdcb4ef2605.herokuapp.com/api/v1/book?page=1&limit=20",
           {
             signal: controller.signal,
           }
