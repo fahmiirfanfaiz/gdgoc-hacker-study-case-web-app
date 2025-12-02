@@ -278,39 +278,45 @@ export default function ShopPage() {
           opacity: 1 !important;
         }
 
-        .reading-list-swiper .swiper-pagination {
+        .reading-list-swiper .swiper-pagination,
+        .swiper-pagination-reading-list {
           position: relative !important;
           bottom: 0 !important;
-          margin-top: 12px !important;
+          margin-top: 20px !important;
           height: auto !important;
           display: flex !important;
           justify-content: center !important;
           align-items: center !important;
-          padding: 8px 0 !important;
+          padding: 12px 0 !important;
+          z-index: 10 !important;
         }
 
-        .reading-list-swiper .swiper-pagination-bullet {
+        .reading-list-swiper .swiper-pagination-bullet,
+        .swiper-pagination-reading-list .swiper-pagination-bullet {
           background: #23a6f0 !important;
           opacity: 0.3 !important;
-          width: 8px !important;
-          height: 8px !important;
-          margin: 0 4px !important;
+          width: 10px !important;
+          height: 10px !important;
+          margin: 0 5px !important;
           border-radius: 50% !important;
           transition: all 0.3s ease !important;
           flex-shrink: 0 !important;
+          display: inline-block !important;
         }
 
-        .reading-list-swiper .swiper-pagination-bullet:hover {
+        .reading-list-swiper .swiper-pagination-bullet:hover,
+        .swiper-pagination-reading-list .swiper-pagination-bullet:hover {
           opacity: 0.6 !important;
           transform: scale(1.15) !important;
         }
 
-        .reading-list-swiper .swiper-pagination-bullet-active {
+        .reading-list-swiper .swiper-pagination-bullet-active,
+        .swiper-pagination-reading-list .swiper-pagination-bullet-active {
           opacity: 1 !important;
           background: #23a6f0 !important;
           transform: scale(1.2) !important;
-          width: 8px !important;
-          height: 8px !important;
+          width: 10px !important;
+          height: 10px !important;
         }
 
         .reading-list-swiper .swiper-pagination-bullet-active-main {
@@ -318,34 +324,67 @@ export default function ShopPage() {
         }
 
         .reading-list-swiper {
-          padding-bottom: 40px !important;
+          padding-bottom: 60px !important;
         }
 
-        /* Responsive pagination bullets */
+        /* Ensure slides take correct width based on slidesPerView */
+        .reading-list-swiper .swiper-slide {
+          width: 100% !important;
+          flex-shrink: 0 !important;
+        }
+
         @media (min-width: 640px) {
-          .reading-list-swiper .swiper-pagination-bullet {
-            width: 10px !important;
-            height: 10px !important;
-            margin: 0 5px !important;
+          .reading-list-swiper .swiper-slide {
+            width: calc((100% - 32px) / 2) !important;
           }
-          .reading-list-swiper .swiper-pagination-bullet-active {
-            width: 10px !important;
-            height: 10px !important;
-          }
-          .reading-list-swiper .swiper-pagination {
-            margin-top: 16px !important;
+        }
+
+        @media (min-width: 768px) {
+          .reading-list-swiper .swiper-slide {
+            width: calc((100% - 108px) / 4) !important;
           }
         }
 
         @media (min-width: 1024px) {
-          .reading-list-swiper .swiper-pagination-bullet {
-            width: 12px !important;
-            height: 12px !important;
+          .reading-list-swiper .swiper-slide {
+            width: calc((100% - 120px) / 4) !important;
+          }
+        }
+
+        /* Responsive pagination bullets */
+        @media (min-width: 640px) {
+          .reading-list-swiper .swiper-pagination-bullet,
+          .swiper-pagination-reading-list .swiper-pagination-bullet {
+            width: 11px !important;
+            height: 11px !important;
             margin: 0 6px !important;
           }
-          .reading-list-swiper .swiper-pagination-bullet-active {
-            width: 12px !important;
-            height: 12px !important;
+          .reading-list-swiper .swiper-pagination-bullet-active,
+          .swiper-pagination-reading-list .swiper-pagination-bullet-active {
+            width: 11px !important;
+            height: 11px !important;
+          }
+          .reading-list-swiper .swiper-pagination,
+          .swiper-pagination-reading-list {
+            margin-top: 24px !important;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .reading-list-swiper .swiper-pagination-bullet,
+          .swiper-pagination-reading-list .swiper-pagination-bullet {
+            width: 13px !important;
+            height: 13px !important;
+            margin: 0 7px !important;
+          }
+          .reading-list-swiper .swiper-pagination-bullet-active,
+          .swiper-pagination-reading-list .swiper-pagination-bullet-active {
+            width: 13px !important;
+            height: 13px !important;
+          }
+          .reading-list-swiper .swiper-pagination,
+          .swiper-pagination-reading-list {
+            margin-top: 28px !important;
           }
         }
 
@@ -568,100 +607,116 @@ export default function ShopPage() {
         </div>
 
         {/* Your Reading List Section */}
-        <div className="bg-[#FAFAFA] py-6 sm:py-8 md:py-10">
+        <div className="bg-[#FAFAFA] py-8 sm:py-10 md:py-12 lg:py-16 relative z-10">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
             <h2 className="text-xl sm:text-2xl font-bold font-inter text-[#252B42] ml-4 sm:ml-8 md:ml-16 lg:ml-24 mb-4 sm:mb-6">
               Your Reading List
             </h2>
-            <div className="border-t border-[#ECECEC] w-full sm:w-[90vw] md:w-[85vw] lg:w-[80vw] ml-0 sm:ml-[2vw] md:ml-[4vw] lg:ml-[6vw] pt-4 sm:pt-6 mb-3 sm:mb-4"></div>
+            <div className="border-t border-[#ECECEC] w-full sm:w-[90vw] md:w-[85vw] lg:w-[80vw] ml-0 sm:ml-[2vw] md:ml-[4vw] lg:ml-[6vw] pt-6 sm:pt-8 mb-6 sm:mb-8"></div>
 
             {/* Show wishlist books or empty state */}
             {wishlistBooks.length > 0 ? (
-              <div className="relative px-8 sm:px-10 md:px-12 flex items-center justify-center">
-                {/* Navigation Buttons */}
-                <button
-                  onClick={() => readingListSwiperRef.current?.slidePrev()}
-                  className="reading-list-nav-button absolute left-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-[#23A6F0] hover:text-white transition-colors group"
-                  aria-label="Previous slide"
-                >
-                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#252B42] group-hover:text-white" />
-                </button>
-                <button
-                  onClick={() => readingListSwiperRef.current?.slideNext()}
-                  className="reading-list-nav-button absolute right-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-[#23A6F0] hover:text-white transition-colors group"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#252B42] group-hover:text-white" />
-                </button>
+              <div className="relative px-8 sm:px-10 md:px-12 lg:px-16 w-full min-h-[520px] sm:min-h-[540px] md:min-h-[560px] lg:min-h-[580px] flex items-center justify-center">
+                {/* Navigation Buttons - Only show if more slides than visible */}
+                {wishlistBooks.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => readingListSwiperRef.current?.slidePrev()}
+                      className="reading-list-nav-button absolute left-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-[#23A6F0] hover:text-white transition-colors group"
+                      aria-label="Previous slide"
+                    >
+                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#252B42] group-hover:text-white" />
+                    </button>
+                    <button
+                      onClick={() => readingListSwiperRef.current?.slideNext()}
+                      className="reading-list-nav-button absolute right-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center bg-white rounded-full shadow-md hover:bg-[#23A6F0] hover:text-white transition-colors group"
+                      aria-label="Next slide"
+                    >
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#252B42] group-hover:text-white" />
+                    </button>
+                  </>
+                )}
                 {/* Swiper for Reading List */}
-                <Swiper
-                  modules={[Navigation, Pagination]}
-                  onSwiper={(swiper) => (readingListSwiperRef.current = swiper)}
-                  navigation={{
-                    enabled: true,
-                    prevEl: null,
-                    nextEl: null,
-                  }}
-                  pagination={{
-                    clickable: true,
-                    dynamicBullets: true,
-                    dynamicMainBullets: 1,
-                    renderBullet: function (index, className) {
-                      return '<span class="' + className + '"></span>';
-                    },
-                  }}
-                  spaceBetween={12}
-                  slidesPerView={1}
-                  loop={false}
-                  allowTouchMove={true}
-                  watchSlidesProgress={true}
-                  observer={true}
-                  observeParents={true}
-                  centeredSlides={false}
-                  slidesOffsetBefore={0}
-                  slidesOffsetAfter={0}
-                  breakpoints={{
-                    640: {
-                      slidesPerView: 2,
-                      spaceBetween: 20,
-                    },
-                    768: {
-                      slidesPerView: 3,
-                      spaceBetween: 24,
-                    },
-                    1024: {
-                      slidesPerView: 4,
-                      spaceBetween: 28,
-                    },
-                  }}
-                  className="reading-list-swiper"
-                >
-                  {wishlistBooks.map((book) => {
-                    const bookPrice = parsePrice(
-                      book.details?.price || book.price || "0"
-                    );
-                    const bookDiscounted = bookPrice * 0.8;
+                <div className="flex flex-col items-center justify-center w-full">
+                  <Swiper
+                    modules={[Navigation, Pagination]}
+                    onSwiper={(swiper) =>
+                      (readingListSwiperRef.current = swiper)
+                    }
+                    navigation={{
+                      enabled: true,
+                      prevEl: null,
+                      nextEl: null,
+                    }}
+                    pagination={{
+                      el: ".swiper-pagination-reading-list",
+                      clickable: true,
+                      dynamicBullets: false,
+                      type: "bullets",
+                      renderBullet: function (index, className) {
+                        return '<span class="' + className + '"></span>';
+                      },
+                    }}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    slidesPerGroup={1}
+                    loop={false}
+                    allowTouchMove={true}
+                    watchSlidesProgress={true}
+                    watchOverflow={true}
+                    observer={true}
+                    observeParents={true}
+                    centeredSlides={false}
+                    slidesOffsetBefore={0}
+                    slidesOffsetAfter={0}
+                    breakpoints={{
+                      640: {
+                        slidesPerView: 2,
+                        spaceBetween: 32,
+                        slidesPerGroup: 2,
+                      },
+                      768: {
+                        slidesPerView: 4,
+                        spaceBetween: 36,
+                        slidesPerGroup: 4,
+                      },
+                      1024: {
+                        slidesPerView: 4,
+                        spaceBetween: 40,
+                        slidesPerGroup: 4,
+                      },
+                    }}
+                    className="reading-list-swiper w-full"
+                  >
+                    {wishlistBooks.map((book) => {
+                      const bookPrice = parsePrice(
+                        book.details?.price || book.price || "0"
+                      );
+                      const bookDiscounted = bookPrice * 0.8;
 
-                    return (
-                      <SwiperSlide key={book._id}>
-                        <BookCard
-                          id={book._id}
-                          title={book.title}
-                          coverImage={book.cover_image}
-                          category={book.category?.name}
-                          originalPrice={`Rp ${bookPrice.toLocaleString(
-                            "id-ID"
-                          )}`}
-                          discountedPrice={`Rp ${bookDiscounted.toLocaleString(
-                            "id-ID"
-                          )}`}
-                          showBuyButton={true}
-                          onClick={() => handleReadingListBookClick(book._id)}
-                        />
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
+                      return (
+                        <SwiperSlide key={book._id} className="h-auto">
+                          <BookCard
+                            id={book._id}
+                            title={book.title}
+                            coverImage={book.cover_image}
+                            category={book.category?.name}
+                            originalPrice={`Rp ${bookPrice.toLocaleString(
+                              "id-ID"
+                            )}`}
+                            discountedPrice={`Rp ${bookDiscounted.toLocaleString(
+                              "id-ID"
+                            )}`}
+                            showBuyButton={true}
+                            onClick={() => handleReadingListBookClick(book._id)}
+                          />
+                        </SwiperSlide>
+                      );
+                    })}
+                  </Swiper>
+                  {/* Pagination Container */}
+                  <div className="swiper-pagination-reading-list"></div>
+                </div>
               </div>
             ) : (
               <div className="text-center py-12">
@@ -681,12 +736,12 @@ export default function ShopPage() {
         </div>
 
         {/* Books For You Section */}
-        <div className="bg-[#FAFAFA] mt-[-5vw] md:mt-[-10vw] sm:mt-[-15vw] py-8 sm:py-12 md:py-16">
+        <div className="bg-[#FAFAFA] py-8 sm:py-12 md:py-16 lg:py-20 relative z-0">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
             <h2 className="text-xl sm:text-2xl font-bold font-inter text-[#252B42] ml-4 sm:ml-8 md:ml-16 lg:ml-24 mb-6 sm:mb-8">
               Books For You
             </h2>
-            <div className="border-t border-[#ECECEC] w-full sm:w-[90vw] md:w-[85vw] lg:w-[80vw] ml-0 sm:ml-[2vw] md:ml-[4vw] lg:ml-[6vw] pt-6 sm:pt-8 mb-4 sm:mb-6"></div>
+            <div className="border-t border-[#ECECEC] w-full sm:w-[90vw] md:w-[85vw] lg:w-[80vw] ml-0 sm:ml-[2vw] md:ml-[4vw] lg:ml-[6vw] pt-6 sm:pt-8 mb-6 sm:mb-8"></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-3 md:gap-2">
               {books.slice(4, 12).map((book) => {
                 const bookPrice = parsePrice(book.details.price);
