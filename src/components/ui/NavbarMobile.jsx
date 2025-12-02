@@ -17,6 +17,7 @@ const NavbarMobile = () => {
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
     { name: "Pages", href: "/pages" },
+    { name: "Reading List", href: "/reading-list" },
   ];
 
   return (
