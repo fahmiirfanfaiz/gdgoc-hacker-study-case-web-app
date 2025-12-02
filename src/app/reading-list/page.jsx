@@ -5,9 +5,11 @@ import BookCard from "@/components/BookCard";
 import { useWishlist } from "@/contexts/wishlist-context";
 import Navbar from "@/components/ui/Navbar";
 import Breadcrumbs from "@/components/ui/Breadcrumb";
+import { Heart, BookOpen, ShoppingBag, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 export default function ReadingListPage() {
-  const { wishlist } = useWishlist();
+  const { wishlist, removeFromWishlist } = useWishlist();
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,28 +79,83 @@ export default function ReadingListPage() {
     };
   };
 
+  const handleClearAll = () => {
+    if (
+      window.confirm(
+        `Are you sure you want to remove all ${books.length} books from your reading list?`
+      )
+    ) {
+      books.forEach((book) => removeFromWishlist(book._id));
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <Breadcrumbs />
 
-      <div className="w-full py-12">
-        <div className="max-w-6xl mx-auto px-10 lg:px-0">
-          <h2 className="text-2xl max-w-5xl mx-auto font-bold text-[#252B42] border-b-2 border-[#ECECEC] pb-6">
-            Your Reading List
-          </h2>
+      {/* Hero Section */}
+      <section className="bg-linear-to-r from-[#252B42] to-[#3E4A6B] text-white py-12 sm:py-16 md:py-20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <Heart className="h-8 w-8 sm:h-10 sm:w-10 text-white fill-white" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-inter mb-4 sm:mb-6">
+              Your Reading List
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-gray-200">
+              {books.length > 0
+                ? `${books.length} ${
+                    books.length === 1 ? "book" : "books"
+                  } saved for later`
+                : "Start building your personal collection"}
+            </p>
+          </div>
+        </div>
+      </section>
 
+      {/* Stats Bar */}
+      {books.length > 0 && (
+        <section className="bg-gray-50 border-b border-gray-200 py-4 sm:py-6">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm sm:text-base text-[#737373] font-inter">
+                <BookOpen className="h-5 w-5" />
+                <span>
+                  Total:{" "}
+                  <strong className="text-[#252B42]">{books.length}</strong>{" "}
+                  books
+                </span>
+              </div>
+              <button
+                onClick={handleClearAll}
+                className="flex items-center gap-2 px-4 py-2 text-sm sm:text-base text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors font-inter font-semibold"
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear All
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Main Content */}
+      <section className="py-12 sm:py-16 md:py-20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           {/* Loading State */}
           {isLoading && (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#23A6F0] mx-auto mb-4"></div>
-              <p className="text-[#737373]">Loading your books...</p>
+            <div className="text-center py-16 sm:py-20">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#252B42] border-t-transparent rounded-full animate-spin mx-auto mb-4 sm:mb-6"></div>
+              <p className="text-base sm:text-lg text-[#737373] font-inter">
+                Loading your reading list...
+              </p>
             </div>
           )}
 
           {/* Books Grid */}
           {!isLoading && books.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
               {books.map((book) => {
                 const prices = parsePrice(book);
 
@@ -120,32 +177,28 @@ export default function ReadingListPage() {
 
           {/* Empty State */}
           {!isLoading && books.length === 0 && (
-            <div className="text-center py-12">
-              <div className="mb-4">
-                <svg
-                  className="w-16 h-16 mx-auto text-[#BDBDBD] mb-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+            <div className="max-w-2xl mx-auto text-center py-16 sm:py-20">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8">
+                <Heart className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400" />
               </div>
-              <p className="text-[#737373] text-lg">
-                No books in your reading list yet. Add some books to get
-                started!
+              <h2 className="text-2xl sm:text-3xl font-bold font-inter text-[#252B42] mb-4">
+                Your Reading List is Empty
+              </h2>
+              <p className="text-base sm:text-lg text-[#737373] font-inter mb-8">
+                Start adding books to your reading list by clicking the heart
+                icon on any book you&apos;d like to save for later.
               </p>
-              <p className="text-[#BDBDBD] text-sm mt-2">
-                Click the heart button on books to add them to your reading
-                list.
-              </p>
+              <Link
+                href="/shop"
+                className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[#252B42] text-white font-semibold rounded-lg hover:bg-[#3E4A6B] transition-colors text-base sm:text-lg"
+              >
+                <ShoppingBag className="h-5 w-5" />
+                Browse Books
+              </Link>
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
