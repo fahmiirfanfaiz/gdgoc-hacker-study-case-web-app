@@ -35,9 +35,9 @@ export default function BookCard({
   };
 
   return (
-    <div onClick={handleClick} className="group cursor-pointer">
+    <div onClick={handleClick} className="group cursor-pointer w-full">
       {/* Book Cover */}
-      <div className="w-[238px] ml-12">
+      <div className="w-full max-w-[238px] mx-auto">
         <div className="relative aspect-4/5 bg-neutral-200 overflow-hidden">
           <Image
             src={coverImage || "/book-placeholder.jpg"}

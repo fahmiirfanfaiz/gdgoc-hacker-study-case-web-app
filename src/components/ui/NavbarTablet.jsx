@@ -29,7 +29,10 @@ const NavbarTablet = () => {
   return (
     <nav className="w-full bg-white border-b">
       <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-[70px]">
+        <div
+          className="flex items-center justify-between h-[70px]"
+          suppressHydrationWarning
+        >
           {/* Logo */}
           <Link
             href="/"

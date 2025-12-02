@@ -158,7 +158,10 @@ const Navbar = () => {
               </div>
 
               {/* Icons */}
-              <div className="flex items-center gap-4 mr-[5vw]">
+              <div
+                className="flex items-center gap-4 mr-[5vw]"
+                suppressHydrationWarning
+              >
                 <Button
                   variant="ghost"
                   size="icon"
